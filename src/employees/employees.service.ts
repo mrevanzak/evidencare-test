@@ -1,11 +1,20 @@
-import { Injectable } from '@nestjs/common';
-import { CreateEmployeeDto } from './dto/create-employee.dto';
-import { UpdateEmployeeDto } from './dto/update-employee.dto';
+import { Inject, Injectable } from '@nestjs/common';
+import type { CreateEmployeeDto } from './dto/create-employee.dto';
+import type { UpdateEmployeeDto } from './dto/update-employee.dto';
+import { EmployeesRepository } from './employees.reposity';
+import { Employee } from './entities/employee.entity';
 
 @Injectable()
 export class EmployeesService {
+  constructor(
+    @Inject('EMPLOYEE_REPOSITORY')
+    private readonly employeesRepository: EmployeesRepository,
+  ) {}
   create(createEmployeeDto: CreateEmployeeDto) {
-    return 'This action adds a new employee';
+    const newEmployee = new Employee();
+    newEmployee.name = createEmployeeDto.name;
+
+    return this.employeesRepository.save(newEmployee);
   }
 
   findAll() {
