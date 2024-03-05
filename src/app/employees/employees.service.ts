@@ -12,6 +12,7 @@ export class EmployeesService {
   ) {}
   create(createEmployeeDto: CreateEmployeeDto) {
     const newEmployee = new Employee();
+    newEmployee.id = this.employeesRepository.getNextId();
     newEmployee.name = createEmployeeDto.name;
     newEmployee.subordinates = createEmployeeDto.subordinateIds?.map((id) => {
       const subordinate = this.employeesRepository.findOne(id);

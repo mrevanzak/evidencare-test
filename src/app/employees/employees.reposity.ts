@@ -7,6 +7,10 @@ export class EmployeesRepository {
     this.entity = new Map<number, Employee>();
   }
 
+  public getNextId(): number {
+    return this.entity.size + 1;
+  }
+
   public save(entity: Employee): Employee {
     this.entity.set(entity.id, entity);
     return entity;
