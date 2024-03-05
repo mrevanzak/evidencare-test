@@ -11,4 +11,8 @@ export class EmployeesRepository {
     this.entity.set(entity.id, entity);
     return entity;
   }
+
+  public findOne(id: number): Employee | undefined {
+    return this.entity.get(id);
+  }
 }

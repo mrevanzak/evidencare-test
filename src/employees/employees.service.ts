@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import type { CreateEmployeeDto } from './dto/create-employee.dto';
 import type { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { EmployeesRepository } from './employees.reposity';
@@ -13,6 +13,22 @@ export class EmployeesService {
   create(createEmployeeDto: CreateEmployeeDto) {
     const newEmployee = new Employee();
     newEmployee.name = createEmployeeDto.name;
+    newEmployee.subordinates = createEmployeeDto.subordinateIds?.map((id) => {
+      const subordinate = this.employeesRepository.findOne(id);
+      if (!subordinate) {
+        throw new HttpException('Subordinate not found', HttpStatus.NOT_FOUND);
+      }
+      return subordinate;
+    });
+
+    if (createEmployeeDto.managerId) {
+      const manager = this.employeesRepository.findOne(
+        createEmployeeDto.managerId,
+      );
+      if (!manager) {
+        throw new HttpException('Manager not found', HttpStatus.NOT_FOUND);
+      }
+    }
 
     return this.employeesRepository.save(newEmployee);
   }

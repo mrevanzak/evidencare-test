@@ -1,5 +1,6 @@
 export class Employee {
   id: number;
   name: string;
-  subordinates: Employee[];
+  subordinates?: Employee[];
+  managerId: number;
 }
