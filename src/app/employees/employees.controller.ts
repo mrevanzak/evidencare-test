@@ -26,6 +26,7 @@ export class EmployeesController {
   }
 
   @Get()
+  @ResponseMessage('Employees retrieved successfully')
   findAll() {
     return this.employeesService.findAll();
   }
