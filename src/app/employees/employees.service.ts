@@ -34,7 +34,7 @@ export class EmployeesService {
   }
 
   findAll() {
-    return `This action returns all employees`;
+    return this.employeesRepository.findAll();
   }
 
   findOne(id: number) {

@@ -15,4 +15,8 @@ export class EmployeesRepository {
   public findOne(id: number): Employee | undefined {
     return this.entity.get(id);
   }
+
+  public findAll(): Employee[] {
+    return Array.from(this.entity.values());
+  }
 }
