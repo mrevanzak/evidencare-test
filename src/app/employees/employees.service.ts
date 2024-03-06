@@ -14,24 +14,33 @@ export class EmployeesService {
     const newEmployee = new Employee();
     newEmployee.id = this.employeesRepository.getNextId();
     newEmployee.name = createEmployeeDto.name;
-    newEmployee.subordinates = createEmployeeDto.subordinateIds?.map((id) => {
-      const subordinate = this.employeesRepository.findOne(id);
-      if (!subordinate) {
-        throw new HttpException('Subordinate not found', HttpStatus.NOT_FOUND);
-      }
-      return subordinate;
-    });
+    newEmployee.subordinates =
+      createEmployeeDto.subordinateIds?.map((id) => {
+        const subordinate = this.employeesRepository.findOne(id);
+        if (!subordinate) {
+          throw new HttpException(
+            `Subordinate with id ${id} not found`,
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+        return subordinate;
+      }) ?? [];
 
     if (createEmployeeDto.managerId) {
       const manager = this.employeesRepository.findOne(
         createEmployeeDto.managerId,
       );
       if (!manager) {
-        throw new HttpException('Manager not found', HttpStatus.NOT_FOUND);
+        throw new HttpException(
+          `Manager with id ${createEmployeeDto.managerId} not found`,
+          HttpStatus.BAD_REQUEST,
+        );
       }
+      newEmployee.manager = manager;
+      manager.subordinates.push(newEmployee);
     }
 
-    return this.employeesRepository.save(newEmployee);
+    return this.employeesRepository.add(newEmployee);
   }
 
   findAll() {

@@ -1,6 +1,7 @@
 export class Employee {
-  id: number;
-  name: string;
-  subordinates?: Employee[];
-  managerId: number;
+  public id: number;
+  public name: string;
+
+  public manager: Employee | null;
+  public subordinates: Employee[];
 }
