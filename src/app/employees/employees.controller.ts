@@ -32,6 +32,7 @@ export class EmployeesController {
   }
 
   @Get(':id')
+  @ResponseMessage(`Employee retrieved successfully`)
   findOne(@Param('id') id: string) {
     return this.employeesService.findOne(+id);
   }
