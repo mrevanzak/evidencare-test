@@ -3,6 +3,7 @@ import type { CreateEmployeeDto } from './dto/create-employee.dto';
 import type { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { EmployeesRepository } from './employees.reposity';
 import { Employee } from './entities/employee.entity';
+import { EmployeesInterface } from './employees.interface';
 
 @Injectable()
 export class EmployeesService {
@@ -47,8 +48,20 @@ export class EmployeesService {
     return this.employeesRepository.findAll();
   }
 
-  findOne(id: number) {
-    return this.employeesRepository.findOne(id);
+  findOne(id: number): EmployeesInterface | null {
+    const employee = this.employeesRepository.findOne(id);
+    if (!employee) {
+      throw new HttpException(
+        `Employee with id ${id} not found`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return {
+      id: employee?.id,
+      name: employee?.name,
+      managerId: employee?.manager?.id ?? null,
+    };
   }
 
   update(id: number, updateEmployeeDto: UpdateEmployeeDto) {
