@@ -26,6 +26,7 @@ export class EmployeesService {
           HttpStatus.BAD_REQUEST,
         );
 
+      let previousSubordinate: Employee | null = null;
       newEmployee.subordinates = createEmployeeDto.subordinateIds.map((id) => {
         const subordinate = this.employeesRepository.findOne(id);
         if (!subordinate) {
@@ -34,8 +35,15 @@ export class EmployeesService {
             HttpStatus.BAD_REQUEST,
           );
         }
+        if (previousSubordinate && previousSubordinate.id !== subordinate.id) {
+          throw new HttpException(
+            'Subordinates must be from the same manager',
+            HttpStatus.BAD_REQUEST,
+          );
+        }
 
         subordinate.manager = newEmployee;
+        previousSubordinate = subordinate;
         return subordinate;
       });
     }
