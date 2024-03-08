@@ -1,9 +1,8 @@
-import { HttpException, HttpStatus } from '@nestjs/common';
 import type { Employee } from './entities/employee.entity';
 import type { EmployeesInterface } from './employees.interface';
 
 export class EmployeesRepository {
-  private root: Employee | null;
+  public root: Employee | null;
   private size: number;
 
   constructor() {
@@ -16,13 +15,6 @@ export class EmployeesRepository {
   }
 
   public add(employee: Employee): EmployeesInterface {
-    if (this.root && !employee.manager && employee.subordinates?.length === 0) {
-      throw new HttpException(
-        'New employee must have either a manager or subordinates when there are already employees in the repository',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
     if (!this.root) {
       this.root = employee;
     }

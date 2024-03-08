@@ -3,7 +3,7 @@ import type { CreateEmployeeDto } from './dto/create-employee.dto';
 import type { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { EmployeesRepository } from './employees.reposity';
 import { Employee } from './entities/employee.entity';
-import { EmployeesInterface } from './employees.interface';
+import type { EmployeesInterface } from './employees.interface';
 
 @Injectable()
 export class EmployeesService {
@@ -39,6 +39,17 @@ export class EmployeesService {
       }
       newEmployee.manager = manager;
       manager.subordinates.push(newEmployee);
+    }
+
+    if (
+      this.employeesRepository.root &&
+      !newEmployee.manager &&
+      newEmployee.subordinates?.length === 0
+    ) {
+      throw new HttpException(
+        'New employee must have either a manager or subordinates when there are already employees in the repository',
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
     return this.employeesRepository.add(newEmployee);
