@@ -15,9 +15,7 @@ export class EmployeesRepository {
   }
 
   public add(employee: Employee): EmployeesInterface {
-    if (!this.root) {
-      this.root = employee;
-    }
+    if (!this.root) this.root = employee;
 
     this.size++;
     return {
@@ -28,21 +26,14 @@ export class EmployeesRepository {
   }
 
   public findOne(id: number): Employee | null {
-    if (!this.root) {
-      return null;
-    }
-
-    if (this.root.id === id) {
-      return this.root;
-    }
+    if (!this.root) return null;
+    if (this.root.id === id) return this.root;
 
     return this.depthFirstSearch(id);
   }
 
   public findAll(): EmployeesInterface[] {
-    if (!this.root) {
-      return [];
-    }
+    if (!this.root) return [];
 
     const employees: EmployeesInterface[] = [];
     function recursiveDepthTraverse(currentNode: Employee) {
@@ -62,9 +53,7 @@ export class EmployeesRepository {
   }
 
   public depthFirstSearch(id: number): Employee | null {
-    if (!this.root) {
-      throw new Error('Employee repository is empty');
-    }
+    if (!this.root) throw new Error('Employee repository is empty');
 
     let targetNode = null;
     let found = false;
@@ -81,9 +70,7 @@ export class EmployeesRepository {
 
         recursiveDepthTraverse(currentNode.subordinates[i]);
         // signal condition to stop the original loop if it is found (goes to next step)
-        if (found) {
-          break;
-        }
+        if (found) break;
       }
     }
 
