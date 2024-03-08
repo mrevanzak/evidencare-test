@@ -46,6 +46,7 @@ export class EmployeesController {
   }
 
   @Delete(':id')
+  @ResponseMessage('Employee removed successfully')
   remove(@Param('id') id: string) {
     return this.employeesService.remove(+id);
   }

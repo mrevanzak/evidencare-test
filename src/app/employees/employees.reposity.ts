@@ -1,5 +1,6 @@
 import type { Employee } from './entities/employee.entity';
 import type { EmployeesInterface } from './employees.interface';
+import { HttpException } from '@nestjs/common';
 
 export class EmployeesRepository {
   public root: Employee | null;
@@ -27,6 +28,36 @@ export class EmployeesRepository {
       name: employee.name,
       managerId: employee.manager?.id ?? null,
     };
+  }
+
+  public remove(id: number): boolean {
+    if (!this.root) return false;
+
+    if (this.root.id === id) {
+      if (this.root.subordinates.length > 1) {
+        throw new HttpException(
+          'Cannot remove this employee because that would make the tree disconnected',
+          400,
+        );
+      }
+      this.root = this.root.subordinates[0] ?? null;
+      this.root.manager = null;
+      this.size--;
+      return true;
+    }
+
+    const targetNode = this.depthFirstSearch(id);
+    if (!targetNode) return false;
+
+    const manager = targetNode.manager;
+    if (manager) {
+      manager.subordinates = manager.subordinates.filter(
+        (subordinate) => subordinate.id !== id,
+      );
+    }
+
+    this.size--;
+    return true;
   }
 
   public findOne(id: number): Employee | null {
