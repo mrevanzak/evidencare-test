@@ -60,11 +60,11 @@ export class EmployeesRepository {
     return true;
   }
 
-  public findOne(id: number): Employee | null {
+  public findOne(search: string | number): Employee | null {
     if (!this.root) return null;
-    if (this.root.id === id) return this.root;
+    if (this.root.id === search || this.root.name === search) return this.root;
 
-    return this.depthFirstSearch(id);
+    return this.depthFirstSearch(search);
   }
 
   public findAll(): EmployeesInterface[] {
@@ -87,7 +87,7 @@ export class EmployeesRepository {
     return employees;
   }
 
-  public depthFirstSearch(id: number): Employee | null {
+  public depthFirstSearch(search: string | number): Employee | null {
     if (!this.root) throw new Error('Employee repository is empty');
 
     let targetNode = null;
@@ -97,7 +97,10 @@ export class EmployeesRepository {
       // traverse over given node children elements
       for (let i = 0; i < currentNode.subordinates.length; i++) {
         // if element matches targetKey, break here
-        if (currentNode.subordinates[i].id === id) {
+        if (
+          currentNode.subordinates[i].id === search ||
+          currentNode.subordinates[i].name === search
+        ) {
           found = true;
           targetNode = currentNode.subordinates[i];
           break;

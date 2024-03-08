@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseInterceptors,
+  Query,
 } from '@nestjs/common';
 import { EmployeesService } from './employees.service';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
@@ -27,7 +28,10 @@ export class EmployeesController {
 
   @Get()
   @ResponseMessage('Employees retrieved successfully')
-  findAll() {
+  findAll(@Query('search') search?: string) {
+    if (search) {
+      return this.employeesService.findOne(search);
+    }
     return this.employeesService.findAll();
   }
 

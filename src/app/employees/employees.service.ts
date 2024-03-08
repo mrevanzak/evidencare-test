@@ -85,11 +85,18 @@ export class EmployeesService {
     return this.employeesRepository.findAll();
   }
 
-  findOne(id: number): EmployeesInterface | null {
-    const employee = this.employeesRepository.findOne(id);
+  findOne(search: number | string): EmployeesInterface | null {
+    const employee = this.employeesRepository.findOne(search);
     if (!employee) {
+      if (typeof search === 'string') {
+        throw new HttpException(
+          `Employee with name ${search} not found`,
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
       throw new HttpException(
-        `Employee with id ${id} not found`,
+        `Employee with id ${search} not found`,
         HttpStatus.NOT_FOUND,
       );
     }
