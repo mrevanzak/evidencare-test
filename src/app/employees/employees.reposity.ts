@@ -17,6 +17,10 @@ export class EmployeesRepository {
   public add(employee: Employee): EmployeesInterface {
     if (!this.root) this.root = employee;
 
+    if (employee.subordinates.includes(this.root)) {
+      this.root = employee;
+    }
+
     this.size++;
     return {
       id: employee.id,

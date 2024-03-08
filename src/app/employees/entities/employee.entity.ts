@@ -3,5 +3,5 @@ export class Employee {
   public name: string;
 
   public manager: Employee | null;
-  public subordinates: Employee[];
+  public subordinates: Employee[] = [];
 }

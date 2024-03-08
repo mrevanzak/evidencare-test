@@ -15,8 +15,18 @@ export class EmployeesService {
     const newEmployee = new Employee();
     newEmployee.id = this.employeesRepository.getNextId();
     newEmployee.name = createEmployeeDto.name;
-    newEmployee.subordinates =
-      createEmployeeDto.subordinateIds?.map((id) => {
+
+    if (
+      createEmployeeDto.subordinateIds &&
+      createEmployeeDto.subordinateIds.length > 0
+    ) {
+      if (!createEmployeeDto.managerId)
+        throw new HttpException(
+          'Manager id is required when creating an employee with subordinates',
+          HttpStatus.BAD_REQUEST,
+        );
+
+      newEmployee.subordinates = createEmployeeDto.subordinateIds.map((id) => {
         const subordinate = this.employeesRepository.findOne(id);
         if (!subordinate) {
           throw new HttpException(
@@ -24,8 +34,11 @@ export class EmployeesService {
             HttpStatus.BAD_REQUEST,
           );
         }
+
+        subordinate.manager = newEmployee;
         return subordinate;
-      }) ?? [];
+      });
+    }
 
     if (createEmployeeDto.managerId) {
       const manager = this.employeesRepository.findOne(
@@ -37,8 +50,13 @@ export class EmployeesService {
           HttpStatus.BAD_REQUEST,
         );
       }
+
       newEmployee.manager = manager;
-      manager.subordinates.push(newEmployee);
+      if (!createEmployeeDto.subordinateIds) {
+        manager.subordinates.push(newEmployee);
+      } else {
+        manager.subordinates = [newEmployee];
+      }
     }
 
     if (
@@ -80,6 +98,14 @@ export class EmployeesService {
   }
 
   remove(id: number) {
-    return `This action removes a #${id} employee`;
+    const removed = this.employeesRepository.remove(id);
+    if (!removed) {
+      throw new HttpException(
+        `Employee with id ${id} not found`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return true;
   }
 }
