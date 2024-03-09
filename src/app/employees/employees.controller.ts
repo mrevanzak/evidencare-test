@@ -34,6 +34,14 @@ export class EmployeesController {
     return this.employeesService.create(createEmployeeDto);
   }
 
+  @Post('bulk')
+  @ResponseMessage('Employees created successfully')
+  createBulk(@Body() createEmployeeDto: CreateEmployeeDto[]) {
+    return createEmployeeDto.map((employee) =>
+      this.employeesService.create(employee),
+    );
+  }
+
   @Get()
   @ResponseMessage('Employees retrieved successfully')
   findAll(@Query('search') search?: string) {

@@ -12,6 +12,12 @@ export class EmployeesService {
     private readonly employeesRepository: EmployeesRepository,
   ) {}
   create(createEmployeeDto: CreateEmployeeDto) {
+    if (this.employeesRepository.root && !createEmployeeDto.managerId) {
+      throw new HttpException(
+        "Manager id is required when there's already a root employee",
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     if (
       createEmployeeDto.managerId === createEmployeeDto.id ||
       createEmployeeDto.subordinateIds?.includes(
