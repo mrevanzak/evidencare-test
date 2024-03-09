@@ -98,6 +98,27 @@ export class EmployeesRepository {
     return managers;
   }
 
+  public getDirectReports(id: string): EmployeesInterface[] {
+    if (!this.root) return [];
+
+    const employee = this.findOne(id);
+    if (!employee) return [];
+
+    const directReports: EmployeesInterface[] = [];
+    function recursiveDirectReportTraverse(currentNode: Employee) {
+      for (let i = 0; i < currentNode.subordinates.length; i++) {
+        directReports.push({
+          id: currentNode.subordinates[i].id,
+          name: currentNode.subordinates[i].name,
+          managerId: currentNode.subordinates[i].manager?.id ?? null,
+        });
+      }
+    }
+
+    recursiveDirectReportTraverse(employee);
+    return directReports;
+  }
+
   public depthFirstSearch(search: string | number): Employee | null {
     if (!this.root) throw new Error('Employee repository is empty');
 

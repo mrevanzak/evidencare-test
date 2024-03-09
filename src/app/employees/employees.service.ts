@@ -148,4 +148,8 @@ export class EmployeesService {
     }
     return this.employeesRepository.getManagers(search);
   }
+
+  getDirectReports(id: string) {
+    return this.employeesRepository.getDirectReports(id);
+  }
 }

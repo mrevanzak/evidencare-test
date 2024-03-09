@@ -57,6 +57,23 @@ export class EmployeesController {
     return this.employeesService.findOne(id);
   }
 
+  @Get(':id/direct-reports')
+  @ResponseMessage('Direct reports for this employee retrieved successfully')
+  getDirectReports(@Param('id') id: string) {
+    return this.employeesService.getDirectReports(id);
+  }
+
+  @Get(':id/direct-reports/count')
+  @ResponseMessage(
+    'Direct reports count for this employee retrieved successfully',
+  )
+  getDirectReportsCount(@Param('id') id: string) {
+    const directReports = this.employeesService.getDirectReports(id);
+    return {
+      total: directReports.length,
+    };
+  }
+
   @Patch(':id')
   update(
     @Param('id') id: string,
