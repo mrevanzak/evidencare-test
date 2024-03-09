@@ -3,7 +3,6 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   UseInterceptors,
@@ -11,7 +10,6 @@ import {
 } from '@nestjs/common';
 import { EmployeesService } from './employees.service';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
-import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { ResponseMessage } from 'src/decorators/response-message.decorator';
 import { TransformInterceptor } from 'src/interceptors/tranform.interceptor';
 
@@ -89,14 +87,6 @@ export class EmployeesController {
     return {
       total: indirectReports.length,
     };
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateEmployeeDto: UpdateEmployeeDto,
-  ) {
-    return this.employeesService.update(+id, updateEmployeeDto);
   }
 
   @Delete(':id')

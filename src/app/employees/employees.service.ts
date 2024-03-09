@@ -1,6 +1,5 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import type { CreateEmployeeDto } from './dto/create-employee.dto';
-import type { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { EmployeesRepository } from './employees.repository';
 import { Employee } from './entities/employee.entity';
 import type { EmployeesInterface } from './employees.interface';
@@ -121,10 +120,6 @@ export class EmployeesService {
       name: employee?.name,
       managerId: employee?.manager?.id ?? null,
     };
-  }
-
-  update(id: number, updateEmployeeDto: UpdateEmployeeDto) {
-    return `This action updates a #${id} employee`;
   }
 
   remove(id: number) {
