@@ -60,11 +60,11 @@ export class EmployeesService {
       }
 
       newEmployee.manager = manager;
-      if (!createEmployeeDto.subordinateIds) {
-        manager.subordinates.push(newEmployee);
-      } else {
-        manager.subordinates = [newEmployee];
-      }
+      manager.subordinates.push(newEmployee);
+      manager.subordinates = manager.subordinates.filter(
+        (subordinate) =>
+          !createEmployeeDto.subordinateIds?.includes(subordinate.id),
+      );
     }
 
     if (
@@ -85,10 +85,10 @@ export class EmployeesService {
     return this.employeesRepository.findAll();
   }
 
-  findOne(search: number | string): EmployeesInterface | null {
+  findOne(search: string): EmployeesInterface | null {
     const employee = this.employeesRepository.findOne(search);
     if (!employee) {
-      if (typeof search === 'string') {
+      if (isNaN(+search)) {
         throw new HttpException(
           `Employee with name ${search} not found`,
           HttpStatus.NOT_FOUND,
@@ -122,5 +122,15 @@ export class EmployeesService {
     }
 
     return true;
+  }
+
+  getManagers(search?: string) {
+    if (!search) {
+      throw new HttpException(
+        'Search parameter is required',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    return this.employeesRepository.getManagers(search);
   }
 }

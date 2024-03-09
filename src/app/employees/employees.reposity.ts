@@ -62,7 +62,8 @@ export class EmployeesRepository {
 
   public findOne(search: string | number): Employee | null {
     if (!this.root) return null;
-    if (this.root.id === search || this.root.name === search) return this.root;
+    if (this.root.id === Number(search) || this.root.name === search)
+      return this.root;
 
     return this.depthFirstSearch(search);
   }
@@ -87,6 +88,25 @@ export class EmployeesRepository {
     return employees;
   }
 
+  public getManagers(search: string): EmployeesInterface[] {
+    if (!this.root) return [];
+
+    const employee = this.findOne(search);
+    const managers: EmployeesInterface[] = [];
+    function recursiveManagerTraverse(currentNode: Employee) {
+      managers.push({
+        id: currentNode.id,
+        name: currentNode.name,
+        managerId: currentNode.manager?.id ?? null,
+      });
+
+      if (currentNode.manager) recursiveManagerTraverse(currentNode.manager);
+    }
+
+    if (employee) recursiveManagerTraverse(employee);
+    return managers;
+  }
+
   public depthFirstSearch(search: string | number): Employee | null {
     if (!this.root) throw new Error('Employee repository is empty');
 
@@ -98,7 +118,7 @@ export class EmployeesRepository {
       for (let i = 0; i < currentNode.subordinates.length; i++) {
         // if element matches targetKey, break here
         if (
-          currentNode.subordinates[i].id === search ||
+          currentNode.subordinates[i].id === Number(search) ||
           currentNode.subordinates[i].name === search
         ) {
           found = true;

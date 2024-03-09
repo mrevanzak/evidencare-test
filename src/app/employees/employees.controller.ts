@@ -20,6 +20,14 @@ import { TransformInterceptor } from 'src/interceptors/tranform.interceptor';
 export class EmployeesController {
   constructor(private readonly employeesService: EmployeesService) {}
 
+  @Get('managers')
+  @ResponseMessage(
+    'Managers data all the way up to the root retrieved successfully',
+  )
+  getManagers(@Query('search') search?: string) {
+    return this.employeesService.getManagers(search);
+  }
+
   @Post()
   @ResponseMessage('Employee created successfully')
   create(@Body() createEmployeeDto: CreateEmployeeDto) {
@@ -38,7 +46,7 @@ export class EmployeesController {
   @Get(':id')
   @ResponseMessage(`Employee retrieved successfully`)
   findOne(@Param('id') id: string) {
-    return this.employeesService.findOne(+id);
+    return this.employeesService.findOne(id);
   }
 
   @Patch(':id')
