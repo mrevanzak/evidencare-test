@@ -119,6 +119,30 @@ export class EmployeesRepository {
     return directReports;
   }
 
+  public getIndirectReports(id: string): EmployeesInterface[] {
+    if (!this.root) return [];
+
+    const employee = this.findOne(id);
+    if (!employee) return [];
+
+    const indirectReports: EmployeesInterface[] = [];
+    function recursiveIndirectReportTraverse(currentNode: Employee) {
+      for (let i = 0; i < currentNode.subordinates.length; i++) {
+        indirectReports.push({
+          id: currentNode.subordinates[i].id,
+          name: currentNode.subordinates[i].name,
+          managerId: currentNode.subordinates[i].manager?.id ?? null,
+        });
+        recursiveIndirectReportTraverse(currentNode.subordinates[i]);
+      }
+    }
+
+    employee.subordinates.forEach((subordinate) => {
+      recursiveIndirectReportTraverse(subordinate);
+    });
+    return indirectReports;
+  }
+
   public depthFirstSearch(search: string | number): Employee | null {
     if (!this.root) throw new Error('Employee repository is empty');
 

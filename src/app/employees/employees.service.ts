@@ -152,4 +152,8 @@ export class EmployeesService {
   getDirectReports(id: string) {
     return this.employeesRepository.getDirectReports(id);
   }
+
+  getIndirectReports(id: string) {
+    return this.employeesRepository.getIndirectReports(id);
+  }
 }
