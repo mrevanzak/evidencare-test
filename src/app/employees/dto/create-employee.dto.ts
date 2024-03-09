@@ -1,6 +1,9 @@
 import { ArrayUnique, IsAlpha, IsNumber, IsOptional } from 'class-validator';
 
 export class CreateEmployeeDto {
+  @IsNumber()
+  readonly id: number;
+
   // check if the name contains only letters
   @IsAlpha()
   readonly name: string;

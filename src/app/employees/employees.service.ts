@@ -13,7 +13,7 @@ export class EmployeesService {
   ) {}
   create(createEmployeeDto: CreateEmployeeDto) {
     const newEmployee = new Employee();
-    newEmployee.id = this.employeesRepository.getNextId();
+    newEmployee.id = createEmployeeDto.id;
     newEmployee.name = createEmployeeDto.name;
 
     if (

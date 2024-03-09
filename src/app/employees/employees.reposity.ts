@@ -4,15 +4,9 @@ import { HttpException } from '@nestjs/common';
 
 export class EmployeesRepository {
   public root: Employee | null;
-  private size: number;
 
   constructor() {
     this.root = null;
-    this.size = 0;
-  }
-
-  public getNextId(): number {
-    return this.size + 1;
   }
 
   public add(employee: Employee): EmployeesInterface {
@@ -22,7 +16,6 @@ export class EmployeesRepository {
       this.root = employee;
     }
 
-    this.size++;
     return {
       id: employee.id,
       name: employee.name,
@@ -42,7 +35,6 @@ export class EmployeesRepository {
       }
       this.root = this.root.subordinates[0] ?? null;
       this.root.manager = null;
-      this.size--;
       return true;
     }
 
@@ -56,7 +48,6 @@ export class EmployeesRepository {
       );
     }
 
-    this.size--;
     return true;
   }
 
