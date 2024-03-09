@@ -12,6 +12,14 @@ export class EmployeesService {
     private readonly employeesRepository: EmployeesRepository,
   ) {}
   create(createEmployeeDto: CreateEmployeeDto) {
+    const isIdExists = this.employeesRepository.findOne(createEmployeeDto.id);
+    if (isIdExists) {
+      throw new HttpException(
+        `Employee with id ${createEmployeeDto.id} already exists`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     const newEmployee = new Employee();
     newEmployee.id = createEmployeeDto.id;
     newEmployee.name = createEmployeeDto.name;
