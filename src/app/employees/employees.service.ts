@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import type { CreateEmployeeDto } from './dto/create-employee.dto';
 import type { UpdateEmployeeDto } from './dto/update-employee.dto';
-import { EmployeesRepository } from './employees.reposity';
+import { EmployeesRepository } from './employees.repository';
 import { Employee } from './entities/employee.entity';
 import type { EmployeesInterface } from './employees.interface';
 
