@@ -3,7 +3,7 @@ import type { EmployeesInterface } from './employees.interface';
 import { HttpException } from '@nestjs/common';
 
 export class EmployeesRepository {
-  public root: Employee | null;
+  private root: Employee | null;
 
   constructor() {
     this.root = null;

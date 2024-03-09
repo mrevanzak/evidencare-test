@@ -12,6 +12,18 @@ export class EmployeesService {
     private readonly employeesRepository: EmployeesRepository,
   ) {}
   create(createEmployeeDto: CreateEmployeeDto) {
+    if (
+      createEmployeeDto.managerId === createEmployeeDto.id ||
+      createEmployeeDto.subordinateIds?.includes(
+        createEmployeeDto.id ?? createEmployeeDto.managerId,
+      )
+    ) {
+      throw new HttpException(
+        'Employee cannot be a manager of itself or a subordinate of itself',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     const isIdExists = this.employeesRepository.findOne(createEmployeeDto.id);
     if (isIdExists) {
       throw new HttpException(
@@ -72,17 +84,6 @@ export class EmployeesService {
       manager.subordinates = manager.subordinates.filter(
         (subordinate) =>
           !createEmployeeDto.subordinateIds?.includes(subordinate.id),
-      );
-    }
-
-    if (
-      this.employeesRepository.root &&
-      !newEmployee.manager &&
-      newEmployee.subordinates?.length === 0
-    ) {
-      throw new HttpException(
-        'New employee must have either a manager or subordinates when there are already employees in the repository',
-        HttpStatus.BAD_REQUEST,
       );
     }
 
